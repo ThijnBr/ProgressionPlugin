@@ -1,0 +1,43 @@
+# Progression Plugin Configuration
+# This file contains all settings for locked items and their progression requirements
+
+# Locked Items Configuration
+# Each entry represents an item that is locked until the player meets a condition
+locked-items:
+  # # Sword progression chain - items must be unlocked in sequence
+  # wooden_sword:
+  #   message: "You need %prog_wooden_sword_progress%/%prog_wooden_sword_amount% zombie kills to use a Wooden Sword!"
+  #   condition:
+  #     type: kills
+  #     entity: zombie
+  #     amount: 10
+
+  # apple:
+  #   message: "You need %prog_apple_progress%/%prog_apple_amount% grass blocks to unlock apples"
+  #   condition:
+  #     type: collect
+  #     material: GRASS_BLOCK
+  #     amount: 1
+
+  # golden_apple:
+  #   message: "Collect %prog_golden_apple_collect_grass_block_progress%/%prog_golden_apple_collect_grass_block_amount% grass blocks and %prog_golden_apple_collect_apple_progress%/%prog_golden_apple_collect_apple_amount% apples after unlocking apples"
+  #   condition:
+  #     type: composite
+  #     conditions:
+  #       - type: prerequisite
+  #         item: apple
+  #       - type: collect
+  #         material: GRASS_BLOCK
+  #         amount: 2
+  #       - type: collect
+  #         material: APPLE
+  #         amount: 1
+
+  # diamond_pickaxe:
+  #   message: "You need to mine %prog_diamond_pickaxe_progress%/%prog_diamond_pickaxe_amount% blocks to use Diamond Pickaxes!"
+  #   condition:
+  #     type: placeholder
+  #     placeholder: player_level
+  #     amount: 10
+
+  

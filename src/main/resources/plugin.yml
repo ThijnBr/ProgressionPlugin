@@ -1,0 +1,28 @@
+name: Progression
+version: ${project.version}
+main: com.thefallersgames.progression.Progression
+api-version: 1.16
+authors: [TheFallersGames]
+description: An item locking system based on player progression
+softdepend: [PlaceholderAPI]
+
+commands:
+  prog:
+    description: Main command for the Progression plugin
+    usage: /prog <status|reload>
+    permission: progression.use
+    aliases: [progression]
+
+permissions:
+  progression.use:
+    description: Allows the use of basic progression commands
+    default: true
+  progression.view:
+    description: Allows viewing progression status
+    default: true
+  progression.reload:
+    description: Allows reloading the configuration
+    default: op
+  progression.bypass:
+    description: Allows bypassing progression restrictions
+    default: op 
