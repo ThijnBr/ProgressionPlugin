@@ -347,6 +347,4 @@ These commands allow administrators to manage player progression:
 - `progression.admin` - Access to admin commands (unlock, lock, reset) (default: op)
 - `progression.bypass` - Bypass progression restrictions (default: op)
 
-1. Check the [GitHub Wiki](https://github.com/thefallersgames/progression/wiki) for detailed documentation
-2. Open an [Issue](https://github.com/thefallersgames/progression/issues) for bug reports or feature requests
-3. Join our [Discord server](https://discord.gg/thefallersgames) for community support 
+1. Join our [Discord server]([https://discord.gg/thefallersgames](https://discord.gg/pNps5D2N83)) for support 
