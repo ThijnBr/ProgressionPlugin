@@ -321,19 +321,22 @@ Progression provides several commands for players and administrators:
 - `/prog` or `/progression` - Shows the main help message
 - `/prog status` - Check the status of the item you're currently holding
 - `/prog reload` - Reload the plugin configuration (requires permission)
+- `/prog testitem` - Test if the held item is properly detected as a custom item (requires permission)
 
 ### Admin Commands
 
 These commands allow administrators to manage player progression:
 
-- `/prog unlock <player/all> <conditionType> <target> [amount]` - Set progress for player(s)
-  - Example: `/prog unlock JohnDoe kills zombie 50`
-  - Example: `/prog unlock all collect apple 100`
-  - If amount is not specified, it will set a high enough value to unlock the item
+- `/prog unlock <player/all> <itemId>` - Set progress for player(s)
+  - Example: `/prog unlock JohnDoe diamond_sword`
+  - Example: `/prog unlock all wooden_pickaxe`
+  - Example: `/prog unlock JohnDoe repairtoken:repair_token` (for custom items)
+  - Automatically unlocks the item by setting progress to the required amount
 
-- `/prog lock <player/all> <conditionType> <target>` - Reset progress to 0 for player(s)
-  - Example: `/prog lock JohnDoe kills zombie`
-  - Example: `/prog lock all collect apple`
+- `/prog lock <player/all> <itemId>` - Reset progress to 0 for player(s)
+  - Example: `/prog lock JohnDoe diamond_sword`
+  - Example: `/prog lock all wooden_pickaxe`
+  - Example: `/prog lock JohnDoe repairtoken:repair_token` (for custom items)
 
 - `/prog reset <player/all>` - Reset all progression data for player(s)
   - Example: `/prog reset JohnDoe`
@@ -349,4 +352,30 @@ These commands allow administrators to manage player progression:
 
 1. Check the [GitHub Wiki](https://github.com/thefallersgames/progression/wiki) for detailed documentation
 2. Open an [Issue](https://github.com/thefallersgames/progression/issues) for bug reports or feature requests
-3. Join our [Discord server](https://discord.gg/thefallersgames) for community support 
+3. Join our [Discord server](https://discord.gg/thefallersgames) for community support
+
+### Custom Item Support (Minecraft 1.21.5+)
+
+Progression now supports custom items using Minecraft 1.21.5+'s new ItemModel API. You can use custom items in your configuration:
+
+```yaml
+# Example of using a custom item as a condition
+wooden_pickaxe:
+  message: "You need %prog_wooden_pickaxe_progress%/%prog_wooden_pickaxe_amount% repair tokens to use a Wooden Pickaxe!"
+  condition:
+    type: collect
+    material: repairtoken:repair_token
+    amount: 1
+
+# Example of defining a progression for a custom item
+repairtoken:repair_token:
+  message: "You need %prog_repairtoken:repair_token_progress%/%prog_repairtoken:repair_token_amount% levels to use this magical wand!"
+  condition:
+    type: collect
+    material: APPLE
+    amount: 1
+```
+
+Custom items are identified by their namespaced ID (e.g., `repairtoken:repair_token`). This works with items that use the new ItemModel API which replaces the deprecated CustomModelData approach.
+
+You can test if your custom items are correctly detected using the `/prog testitem` command while holding the item.

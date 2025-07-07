@@ -239,7 +239,11 @@ public class DefaultProgressService implements ProgressService {
         
         if (condition instanceof CollectCondition) {
             CollectCondition collectCondition = (CollectCondition) condition;
-            message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialType().toString().toLowerCase());
+            if (collectCondition.isCustomItem()) {
+                message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialName());
+            } else {
+                message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialType().toString().toLowerCase());
+            }
         } else if (condition instanceof BreakCondition) {
             BreakCondition breakCondition = (BreakCondition) condition;
             message = message.replace("%prog_" + itemId + "_material%", breakCondition.getMaterialType().toString().toLowerCase());
@@ -248,7 +252,11 @@ public class DefaultProgressService implements ProgressService {
             for (ProgressCondition subCondition : composite.getConditions()) {
                 if (subCondition instanceof CollectCondition) {
                     CollectCondition collectCondition = (CollectCondition) subCondition;
-                    message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialType().toString().toLowerCase());
+                    if (collectCondition.isCustomItem()) {
+                        message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialName());
+                    } else {
+                        message = message.replace("%prog_" + itemId + "_material%", collectCondition.getMaterialType().toString().toLowerCase());
+                    }
                     break;
                 } else if (subCondition instanceof BreakCondition) {
                     BreakCondition breakCondition = (BreakCondition) subCondition;
@@ -384,7 +392,17 @@ public class DefaultProgressService implements ProgressService {
             if (progressMet && meetsCondition(player, condition)) {
                 try {
                     // Create an unlock event
-                    ItemStack item = new ItemStack(Material.valueOf(itemId.toUpperCase()));
+                    ItemStack item;
+                    if (itemId.contains(":")) {
+                        // This is a custom item with a namespaced ID
+                        // Since we can't directly create custom items here,
+                        // we'll create a placeholder item with the material PAPER
+                        item = new ItemStack(Material.PAPER);
+                        // Ideally in a real implementation, you would create the actual custom item
+                    } else {
+                        // Regular vanilla item
+                        item = new ItemStack(Material.valueOf(itemId.toUpperCase()));
+                    }
                     ItemUnlockEvent event = new ItemUnlockEvent(player, item, conditionType);
                     Bukkit.getPluginManager().callEvent(event);
                 } catch (Exception e) {

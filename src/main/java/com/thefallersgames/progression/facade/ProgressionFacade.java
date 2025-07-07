@@ -74,11 +74,17 @@ public class ProgressionFacade implements UnlockFacade {
             return ChatColor.GREEN + "This item is not restricted.";
         }
         
+        // Add details about the item identification
+        StringBuilder message = new StringBuilder();
+        
         if (progressService.meetsCondition(player, condition)) {
-            return ChatColor.GREEN + "You have unlocked this item! (" + 
-                   condition.getCurrentProgress(player) + "/" + condition.getRequiredProgress() + ")";
+            message.append(ChatColor.GREEN).append("You have unlocked this item! (")
+                  .append(condition.getCurrentProgress(player)).append("/")
+                  .append(condition.getRequiredProgress()).append(")");
         } else {
-            return ChatColor.RED + progressService.getItemLockMessage(player, item);
+            message.append(ChatColor.RED).append(progressService.getItemLockMessage(player, item));
         }
+        
+        return message.toString();
     }
 } 

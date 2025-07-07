@@ -1,5 +1,6 @@
 package com.thefallersgames.progression.condition;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -13,9 +14,10 @@ import com.thefallersgames.progression.data.PlayerDataManager;
 public class CollectCondition implements ProgressCondition {
     
     private final PlayerDataManager dataManager;
-    private final Material materialType;
+    private Material materialType;
     private final int requiredAmount;
     private final String materialName; // Store the actual material name used for lookups
+    private final boolean isCustomItem; // Flag indicating if this is a custom namespaced item
     
     /**
      * Create a new CollectCondition from configuration
@@ -26,13 +28,25 @@ public class CollectCondition implements ProgressCondition {
     public CollectCondition(ConfigurationSection config, PlayerDataManager dataManager) {
         this.dataManager = dataManager;
         
-        String materialName = config.getString("material", "APPLE").toUpperCase();
-        try {
-            this.materialType = Material.valueOf(materialName);
-            // Store the normalized name that will be used for progress tracking
-            this.materialName = this.materialType.toString().toLowerCase();
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid material type: " + materialName);
+        String materialName = config.getString("material", "APPLE");
+        
+        // Check if this is a custom namespaced item (contains ':')
+        if (materialName.contains(":")) {
+            // This is a custom item with a namespaced ID
+            this.isCustomItem = true;
+            this.materialName = materialName.toLowerCase(); // Store as-is for lookups
+            this.materialType = null; // No direct Material type for custom items
+        } else {
+            // This is a regular Bukkit Material
+            this.isCustomItem = false;
+            
+            try {
+                this.materialType = Material.valueOf(materialName.toUpperCase());
+                // Store the normalized name that will be used for progress tracking
+                this.materialName = this.materialType.toString().toLowerCase();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid material type: " + materialName);
+            }
         }
         
         this.requiredAmount = config.getInt("amount", 50);
@@ -62,10 +76,19 @@ public class CollectCondition implements ProgressCondition {
     /**
      * Get the material type for this condition
      * 
-     * @return The material type
+     * @return The material type, or null if this is a custom item
      */
     public Material getMaterialType() {
         return materialType;
+    }
+    
+    /**
+     * Check if this condition is for a custom namespaced item
+     * 
+     * @return true if this is a custom item, false if it's a vanilla material
+     */
+    public boolean isCustomItem() {
+        return isCustomItem;
     }
     
     /**

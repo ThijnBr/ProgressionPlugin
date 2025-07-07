@@ -432,4 +432,55 @@ public class MyProgressPlugin extends JavaPlugin implements Listener {
 
 ## API Reference
 
-See the [Javadoc](https://thefallersgames.github.io/progression/javadoc/) for a complete API reference. 
+See the [Javadoc](https://thefallersgames.github.io/progression/javadoc/) for a complete API reference.
+
+## Custom Item Support (1.21.5+)
+
+Progression now supports Minecraft 1.21.5+'s new ItemModel API for custom items. This allows you to use and track custom items from datapacks or mods.
+
+### How Custom Items Are Identified
+
+Custom items are identified by their namespaced ID from the ItemModel API:
+
+```java
+// Example of how the plugin identifies custom items
+if (item.hasItemMeta() && item.getItemMeta().hasItemModel()) {
+    NamespacedKey itemModel = item.getItemMeta().getItemModel();
+    if (itemModel != null) {
+        String customId = itemModel.getNamespace() + ":" + itemModel.getKey();
+        // Use customId for lookup and tracking
+    }
+}
+```
+
+### Using Custom Items in Your Plugin
+
+If you're extending Progression or creating an addon, you can access the updated ItemUtil class for handling custom items:
+
+```java
+// Get identifier for an item (works with both vanilla and custom items)
+String itemId = ItemUtil.getItemId(itemStack);
+
+// Check if two items are the same type (works with both vanilla and custom items)
+boolean sameType = ItemUtil.isSameType(itemStack1, itemStack2);
+```
+
+When creating conditions for custom items, simply use the namespaced ID as the material:
+
+```java
+ConfigurationSection config = new YamlConfiguration();
+config.set("type", "collect");
+config.set("material", "repairtoken:repair_token");
+config.set("amount", 5);
+
+ProgressCondition condition = conditionFactory.createCondition(config);
+```
+
+### Testing Custom Items
+
+Use the `/prog testitem` command while holding a custom item to see if it's being properly detected by the plugin. This will show information like:
+
+- Whether the item has ItemMeta
+- Whether it has an ItemModel
+- The NamespacedKey of the ItemModel
+- The identifier used by Progression 

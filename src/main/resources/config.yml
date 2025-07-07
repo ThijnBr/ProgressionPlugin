@@ -40,4 +40,17 @@ locked-items:
   #     placeholder: player_level
   #     amount: 10
 
-  
+  # Example of custom item with custom ID (for mods or datapacks)
+  # repairtoken:repair_token:
+  #   message: "You need %prog_repairtoken:repair_token_progress%/%prog_repairtoken:repair_token_amount% levels to use this magical wand!"
+  #   condition:
+  #     type: collect
+  #     material: APPLE
+  #     amount: 1
+
+  # paper:
+  #   message: "You need %prog_paper_progress%/%prog_paper_amount% zombie kills to use a Wooden Pickaxe!"
+  #   condition:
+  #     type: collect
+  #     material: repairtoken:repair_token
+  #     amount: 1

@@ -9,7 +9,7 @@ softdepend: [PlaceholderAPI]
 commands:
   prog:
     description: Main command for the Progression plugin
-    usage: /prog <status|reload>
+    usage: /prog <status|reload|unlock|lock|reset|testitem>
     permission: progression.use
     aliases: [progression]
 
@@ -25,4 +25,7 @@ permissions:
     default: op
   progression.bypass:
     description: Allows bypassing progression restrictions
+    default: op
+  progression.admin:
+    description: Allows using administrative commands like unlock, lock, reset, and testitem
     default: op 

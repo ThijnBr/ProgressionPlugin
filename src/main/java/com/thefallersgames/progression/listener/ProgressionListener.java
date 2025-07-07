@@ -71,10 +71,23 @@ public class ProgressionListener implements Listener {
     public void onItemPickup(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItem().getItemStack();
-        String itemType = item.getType().toString().toLowerCase(); // Use toString() for consistency
+        
+        // Check for custom items with ItemModel (1.21.5+)
+        String itemIdentifier;
+        if (item.hasItemMeta() && item.getItemMeta().hasItemModel()) {
+            // This is a custom item with a namespaced ID
+            itemIdentifier = item.getItemMeta().getItemModel().toString();
+            // Convert to the format namespace:key by removing 'minecraft:' prefix if present
+            if (itemIdentifier.startsWith("minecraft:")) {
+                itemIdentifier = itemIdentifier.substring(10);
+            }
+        } else {
+            // Regular vanilla item
+            itemIdentifier = item.getType().toString().toLowerCase();
+        }
         
         // Record the collection
-        progressService.recordProgress(player, "collect", itemType, item.getAmount());
+        progressService.recordProgress(player, "collect", itemIdentifier, item.getAmount());
         
         // After recording progress, check for locked items
         // This is important if collecting an item unlocked/locked another item

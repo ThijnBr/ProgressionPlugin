@@ -189,8 +189,19 @@ public class ProgressionExpansion extends PlaceholderExpansion {
             }
             
             String itemId = itemIdBuilder.toString();
-            Material material;
             
+            // Special handling for namespaced custom items (format: namespace:key)
+            // This ensures items like "repairtoken:repair_token" are properly identified
+            if (itemId.contains(":")) {
+                // Direct lookup in the config for namespaced custom items
+                Map<String, ProgressCondition> conditions = progressService.getAllConditions();
+                if (conditions.containsKey(itemId.toLowerCase())) {
+                    return handleItemPlaceholder(player, conditions.get(itemId.toLowerCase()), property, itemId);
+                }
+            }
+            
+            // Regular material item handling
+            Material material;
             try {
                 material = Material.valueOf(itemId.toUpperCase());
             } catch (IllegalArgumentException e) {
@@ -267,6 +278,10 @@ public class ProgressionExpansion extends PlaceholderExpansion {
                 
             case "material":
                 if (condition instanceof CollectCondition) {
+                    CollectCondition collectCondition = (CollectCondition) condition;
+                    if (collectCondition.isCustomItem()) {
+                        return collectCondition.getMaterialName();
+                    }
                     return ((CollectCondition) condition).getMaterialType().toString().toLowerCase();
                 }
                 if (condition instanceof BreakCondition) {
@@ -277,6 +292,10 @@ public class ProgressionExpansion extends PlaceholderExpansion {
                     CompositeCondition composite = (CompositeCondition) condition;
                     for (ProgressCondition subCondition : composite.getConditions()) {
                         if (subCondition instanceof CollectCondition) {
+                            CollectCondition collectCondition = (CollectCondition) subCondition;
+                            if (collectCondition.isCustomItem()) {
+                                return collectCondition.getMaterialName();
+                            }
                             return ((CollectCondition) subCondition).getMaterialType().toString().toLowerCase();
                         }
                         if (subCondition instanceof BreakCondition) {
